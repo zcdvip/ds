@@ -115,90 +115,7 @@ with open("itv.txt", 'w', encoding='utf-8') as file:
     for result in results:
         file.write(result + "\n")
 
-channels = []
 
-for result in results:
-    line = result.strip()
-    if result:
-        channel_name, channel_url = result.split(',',1)
-        channels.append((channel_name, channel_url))
-
-
-eventlet.monkey_patch()
-
-# 线程安全的队列，用于存储下载任务
-task_queue = Queue()
-
-# 线程安全的列表，用于存储结果
-results = []
-error_channels = []
-
-# 定义工作线程函数
-def worker():
-    while True:
-        # 从队列中获取一个任务
-        channel_name, channel_url = task_queue.get()
-        try:
-            response = requests.get(channel_url, timeout=1)
-            if response.status_code == 200:
-                channel_url_t = channel_url.rstrip(channel_url.split('/')[-1])  # m3u8链接前缀
-                lines = requests.get(channel_url,timeout=1).text.strip().split('\n')  # 获取m3u8文件内容
-                ts_lists = [line.split('/')[-1] for line in lines if line.startswith('#') == False]  # 获取m3u8文件下视频流后缀
-                file_size = 0
-                start_time = time.time()
-                # 多获取的视频数据进行20秒钟限制
-                with eventlet.Timeout(10, False):
-                    for i in range(len(ts_lists)):
-                        ts_url = channel_url_t + ts_lists[i]  # 拼接单个视频片段下载链接
-                        response = requests.get(ts_url, stream=True, timeout=1)
-                        for chunk in response.iter_content(chunk_size=1024):
-                            if chunk:
-                                file_size += len(chunk)
-                        response.close()
-                end_time = time.time()
-                response_time = end_time - start_time
-                download_speed = file_size / response_time / 1024
-                normalized_speed =download_speed / 1024  # 将速率从kB/s转换为MB/s
-                ts_url = channel_url_t + ts_lists[0]  # 拼接单个视频片段下载链接
-                if normalized_speed >= 0.001:
-                    result = channel_name, channel_url, f"{normalized_speed:.3f} MB/s"
-                    results.append(result)
-                    numberx = (len(results) + len(error_channels)) / len(channels) * 100
-                    #print(f"可用频道：{len(results)} , 网速：{normalized_speed:.3f} MB/s , 分辨率：{width}X{height}, 不可用频道：{len(error_channels)} 个 , 总频道：{len(channels)} 个 ,总进度：{numberx:.2f} %。")
-                    print(f"可用频道：{len(results)} , 网速：{normalized_speed:.3f} MB/s ,不可用频道：{len(error_channels)} 个 , 总频道：{len(channels)} 个 ,总进度：{numberx:.2f} %。")
-                else:
-                    error_channel = channel_name, channel_url
-                    error_channels.append(error_channel)
-                    numberx = (len(results) + len(error_channels)) / len(channels) * 100
-                    print(f"可用频道：{len(results)} 个 , 不可用频道：{len(error_channels)} , 网速：{normalized_speed:.3f} MB/s , 总频道：{len(channels)} 个 ,总进度：{numberx:.2f} %。")
-            else:
-                error_channel = channel_name, channel_url
-                error_channels.append(error_channel)
-                numberx = (len(results) + len(error_channels)) / len(channels) * 100
-                print(
-                    f"可用频道：{len(results)} 个 , 不可用频道：{len(error_channels)} 个 , 总频道：{len(channels)} 个 ,总进度：{numberx:.2f} %。")
-        except:
-            error_channel = channel_name, channel_url
-            error_channels.append(error_channel)
-            numberx = (len(results) + len(error_channels)) / len(channels) * 100
-            print(f"可用频道：{len(results)} 个 , 不可用频道：{len(error_channels)} 个 , 总频道：{len(channels)} 个 ,总进度：{numberx:.2f} %。")
-
-        # 标记任务完成
-        task_queue.task_done()
-
-
-# 创建多个工作线程
-num_threads = 10
-for _ in range(num_threads):
-    t = threading.Thread(target=worker, daemon=True)  # 将工作线程设置为守护线程
-    t.start()
-
-# 添加下载任务到队列
-for channel in channels:
-    task_queue.put(channel)
-
-# 等待所有任务完成
-task_queue.join()
 
 
 def channel_key(channel_name):
@@ -209,14 +126,8 @@ def channel_key(channel_name):
         return float('inf')  # 返回一个无穷大的数字作为关键字
 
 # 对频道进行排序
-results.sort(key=lambda x: (x[0], -float(x[2].split()[0])))
 results.sort(key=lambda x: channel_key(x[0]))
 
-# 将结果写入文件
-with open("itv_results.txt", 'w', encoding='utf-8') as file:
-    for result in results:
-        channel_name, channel_url, speed = result
-        file.write(f"{channel_name},{channel_url},{speed}\n")
 
 result_counter = 8  # 每个频道需要的个数
 
