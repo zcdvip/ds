@@ -110,8 +110,6 @@ for url in urls:
         continue
 
 results = set(results)   # 去重得到唯一的URL列表
-results = sorted(results)
-
 
 def channel_key(channel_name):
     match = re.search(r'\d+', channel_name)
@@ -121,9 +119,7 @@ def channel_key(channel_name):
         return float('inf')  # 返回一个无穷大的数字作为关键字
 
 # 对频道进行排序
-results.sort(key=lambda x: (x[0], x[1]))
 results.sort(key=lambda x: channel_key(x[0]))
-
 
 result_counter = 8  # 每个频道需要的个数
 
