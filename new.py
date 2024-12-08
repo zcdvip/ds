@@ -724,6 +724,13 @@ with concurrent.futures.ThreadPoolExecutor(max_workers=100) as executor:
 
 for url in valid_urls:
     print(url)
+    
+now_today = datetime.date.today()
+with open("ip.txt", 'a', encoding='utf-8') as file:
+    file.write(f"{now_today}更新\n")
+    for url in valid_urls:
+        file.write(url + "\n")
+        
 # 遍历网址列表，获取JSON文件并解析
 for url in valid_urls:
     try:
