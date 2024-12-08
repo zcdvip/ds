@@ -1,4 +1,5 @@
 import time
+import datetime
 import concurrent.futures
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
@@ -820,4 +821,7 @@ for result in results:
         channel_name, channel_url = result.split(',')
         channels.append((channel_name, channel_url))
     print(result)
-
+with open("tvlist.txt", 'w', encoding='utf-8') as file:
+    for result in results:
+        if result:
+            file.write(result + "\n")
