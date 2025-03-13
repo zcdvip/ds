@@ -1,0 +1,16 @@
+name: Sync to Gitee
+ 
+on: [push]
+ 
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Sync to Gitee
+      uses: wearerequired/git-mirror-action@master
+      env:
+        # 注意替换下面的 YOUR_GITEE_REPO 和 YOUR_GITHUB_REPO 为你的仓库地址
+        TARGET_GIT_URL: git@gitee.com:https://gitee.com/zcdvip/ds.git
+        SOURCE_GIT_URL: https://github.com/zcdvip/ds.git
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
