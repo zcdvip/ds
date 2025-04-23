@@ -2,10 +2,11 @@
 *CCTV3,http://112.27.145.212:9901/tsfile/live/1502_1.m3u8?key=txiptv&playlive=1&authid=0
 *CCTV5,http://112.27.145.212:9901/tsfile/live/1504_1.m3u8?key=txiptv&playlive=1&authid=0
 *CCTV6,http://112.27.145.212:9901/tsfile/live/1505_1.m3u8?key=txiptv&playlive=1&authid=0
+CCTV11,http://113.195.13.154:9901/tsfile/live/0011_2.m3u8?key=txiptv&playlive=0&authid=0
 卫视频道,#genre#
-河北卫视,http://183.131.246.250:9901/tsfile/live/0117_1.m3u8?key=txiptv&playlive=1&authid=0
-河南卫视,http://61.163.181.78:9901/tsfile/live/1034_1.m3u8?key=txiptv&playlive=1&authid=0
+北京卫视,http://113.195.13.154:9901/tsfile/live/0122_2.m3u8?key=txiptv&playlive=0&authid=0
+山东卫视,http://113.195.13.154:9901/tsfile/live/0131_2.m3u8?key=txiptv&playlive=0&authid=0
+江苏卫视,http://61.163.181.78:9901/tsfile/live/1044_1.m3u8?key=txiptv&playlive=1&authid=0
 其他频道,#genre#
 中心医院,http://111.9.163.109:8080/live/test.m3u8
-河北影视,http://101.74.28.242:9901/tsfile/live/1004_1.m3u8?key=txiptv&playlive=1&authid=0
-河南都市,http://61.163.181.78:9901/tsfile/live/1004_1.m3u8?key=txiptv&playlive=1&authid=0
+河南电视剧,http://61.163.181.78:9901/tsfile/live/1007_1.m3u8?key=txiptv&playlive=1&authid=0
